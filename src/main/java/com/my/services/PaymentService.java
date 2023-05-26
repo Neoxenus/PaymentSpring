@@ -29,7 +29,7 @@ public class PaymentService {
         paymentRepository.deleteById(paymentId);
     }
 
-    public Page<Payment> getPage(String userId, int pageNum, String sortType){
+    public Page<Payment> getPage(Integer userId, int pageNum, String sortType){
         LOGGER.info("Getting exhibitions on page with number " + pageNum + ", sorted by " + sortType);
         Pageable paging = PageRequest.of(pageNum - 1, DEFAULT_PAGE_SIZE);
         return paymentRepository.findAllBySenderAccountUserIdOrReceiverAccountUserIdAndStatusEquals(userId, userId, PaymentStatus.SENT, paging);

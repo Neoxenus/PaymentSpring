@@ -2512,3 +2512,53 @@
 2023-05-24 22:19:55 INFO  AccountController:58 - get accounts ->
 2023-05-24 22:19:55 INFO  AccountController:63 - Principal: OAuth2AuthenticationToken [Principal=Name: [auth0|646e5bb54143421ed3471bcb], Granted Authorities: [[OIDC_USER, SCOPE_email, SCOPE_openid, SCOPE_profile]], User Attributes: [{sub=auth0|646e5bb54143421ed3471bcb, email_verified=false, iss=https://dev-e3n1otn0qq2n0tiy.us.auth0.com/, nonce=N6vRB_c8WLv2Kmf6J1RseyYhsJS_6lbpZcVPlWYNwxk, picture=https://s.gravatar.com/avatar/a3012064ea70afa9351e80e4a62b5dcb?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fus.png, sid=8xxvYaP1MYJXh4A7aeVKVjOMjeMsM-0P, aud=[zTmBgBIVupr7hXAJMuGOPzRlIq3KEVyc], updated_at=2023-05-24T18:47:17.588Z, nickname=user3, name=user3@gmail.com, exp=2023-05-25T05:19:36Z, iat=2023-05-24T19:19:36Z, email=user3@gmail.com}], Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=E985FD4DBF48A7901124E3D841ECF4E8], Granted Authorities=[OIDC_USER, SCOPE_email, SCOPE_openid, SCOPE_profile]]
 2023-05-24 22:19:55 INFO  AccountService:27 - Getting exhibitions on page with number 1, sorted by id
+2023-05-26 20:24:35 INFO  AccountController:40 - Get payments ->
+2023-05-26 20:24:35 INFO  AccountController:45 - Principal: anonymousUser
+2023-05-26 20:24:35 INFO  PaymentService:33 - Getting exhibitions on page with number 1, sorted by id
+2023-05-26 20:24:35 INFO  AccountController:40 - Get payments ->
+2023-05-26 20:24:35 INFO  AccountController:45 - Principal: anonymousUser
+2023-05-26 20:24:35 INFO  PaymentService:33 - Getting exhibitions on page with number 1, sorted by id
+2023-05-26 20:24:48 INFO  AccountController:57 - get accounts ->
+2023-05-26 20:24:48 INFO  AccountController:62 - Principal: anonymousUser
+2023-05-26 20:24:48 INFO  AccountService:27 - Getting exhibitions on page with number 1, sorted by id
+2023-05-26 20:24:49 INFO  AccountController:57 - get accounts ->
+2023-05-26 20:24:49 INFO  AccountController:62 - Principal: anonymousUser
+2023-05-26 20:24:49 INFO  AccountService:27 - Getting exhibitions on page with number 1, sorted by id
+2023-05-26 20:28:36 INFO  AccountController:57 - get accounts ->
+2023-05-26 20:28:36 INFO  AccountController:62 - Principal: anonymousUser
+2023-05-26 20:28:36 INFO  AccountService:27 - Getting exhibitions on page with number 1, sorted by id
+2023-05-26 20:28:36 INFO  AccountController:57 - get accounts ->
+2023-05-26 20:28:36 INFO  AccountController:62 - Principal: anonymousUser
+2023-05-26 20:28:36 INFO  AccountService:27 - Getting exhibitions on page with number 1, sorted by id
+2023-05-26 20:28:56 INFO  AccountController:57 - get accounts ->
+2023-05-26 20:28:56 INFO  AccountController:62 - Principal: anonymousUser
+2023-05-26 20:28:56 INFO  AccountService:27 - Getting exhibitions on page with number 1, sorted by id
+2023-05-26 20:28:56 INFO  AccountController:57 - get accounts ->
+2023-05-26 20:28:56 INFO  AccountController:62 - Principal: anonymousUser
+2023-05-26 20:28:56 INFO  AccountService:27 - Getting exhibitions on page with number 1, sorted by id
+2023-05-26 20:28:57 INFO  AccountController:57 - get accounts ->
+2023-05-26 20:28:57 INFO  AccountController:62 - Principal: anonymousUser
+2023-05-26 20:28:57 INFO  AccountService:27 - Getting exhibitions on page with number 1, sorted by id
+2023-05-26 20:28:57 INFO  AccountController:57 - get accounts ->
+2023-05-26 20:28:57 INFO  AccountController:62 - Principal: anonymousUser
+2023-05-26 20:28:57 INFO  AccountService:27 - Getting exhibitions on page with number 1, sorted by id
+2023-05-26 20:34:51 INFO  AccountController:57 - get accounts ->
+2023-05-26 20:34:51 INFO  AccountController:62 - Principal: anonymousUser
+2023-05-26 20:34:51 INFO  AccountService:28 - Getting exhibitions on page with number 1, sorted by id
+2023-05-26 20:34:51 INFO  AccountController:57 - get accounts ->
+2023-05-26 20:34:51 INFO  AccountController:62 - Principal: anonymousUser
+2023-05-26 20:34:51 INFO  AccountService:28 - Getting exhibitions on page with number 1, sorted by id
+2023-05-26 20:34:53 INFO  AccountController:40 - Get payments ->
+2023-05-26 20:34:53 INFO  AccountController:45 - Principal: anonymousUser
+2023-05-26 20:34:53 INFO  PaymentService:33 - Getting exhibitions on page with number 1, sorted by id
+2023-05-26 20:34:54 INFO  AccountController:40 - Get payments ->
+2023-05-26 20:34:54 INFO  AccountController:45 - Principal: anonymousUser
+2023-05-26 20:34:54 INFO  PaymentService:33 - Getting exhibitions on page with number 1, sorted by id
+2023-05-26 20:34:56 INFO  AccountController:57 - get accounts ->
+2023-05-26 20:34:56 INFO  AccountController:62 - Principal: anonymousUser
+2023-05-26 20:34:56 INFO  AccountService:28 - Getting exhibitions on page with number 1, sorted by id
+2023-05-26 20:34:56 INFO  AccountController:57 - get accounts ->
+2023-05-26 20:34:56 INFO  AccountController:62 - Principal: anonymousUser
+2023-05-26 20:34:56 INFO  AccountService:28 - Getting exhibitions on page with number 1, sorted by id
+2023-05-26 20:39:40 INFO  AccountService:28 - Getting exhibitions on page with number 1, sorted by id
+2023-05-26 20:39:41 INFO  AccountService:28 - Getting exhibitions on page with number 1, sorted by id

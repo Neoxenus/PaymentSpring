@@ -35,16 +35,17 @@ public class SecurityConfiguration {
                 //.cors().and()
 
                 .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers("/","/csrf", "/index.html", "/static/**",
-                                "/*.ico", "/*.json", "/*.png", "/user",
-                                "/oauth2/authorization/auth0", "/logout").permitAll()
-                        .anyRequest().authenticated()
+                                .anyRequest().permitAll()
+//                        .requestMatchers("/","/csrf", "/index.html", "/static/**",
+//                                "/*.ico", "/*.json", "/*.png", "/user",
+//                                "/oauth2/authorization/auth0", "/logout").permitAll()
+                        //.anyRequest().authenticated()
                 )
-                .oauth2Login()
-                .and().logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .addLogoutHandler(logoutHandler)
-                .and()
+//                .oauth2Login()
+//                .and().logout()
+//                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+//                .addLogoutHandler(logoutHandler)
+                //.and()
                 .csrf((csrf) -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository
                                 .withHttpOnlyFalse())

@@ -27,7 +27,7 @@ import java.util.Set;
 public class User implements UserDetails {
     @Id
     @GeneratedValue
-    private String id;
+    private Integer id;
 
     @Column(nullable = false)
     private String name;

@@ -4,6 +4,7 @@ import com.my.entities.Account;
 import com.my.entities.User;
 import com.my.entities.enums.Block;
 import com.my.repositories.AccountRepository;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.AllArgsConstructor;
 import org.apache.log4j.Logger;
 import org.springframework.data.domain.Page;
@@ -23,7 +24,7 @@ public class AccountService {
     private final AccountRepository accountRepository;
     private static final int DEFAULT_PAGE_SIZE = 5;
 
-    public Page<Account> getPage(String userId, int pageNum, String sortType) {
+    public Page<Account> getPage(Integer userId, int pageNum, String sortType) {
         LOGGER.info("Getting exhibitions on page with number " + pageNum + ", sorted by " + sortType);
         Pageable paging = PageRequest.of(pageNum - 1, DEFAULT_PAGE_SIZE, Sort.by(sortType));
         return accountRepository.findAllByUserId(userId, paging);

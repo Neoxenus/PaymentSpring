@@ -17,16 +17,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Iterator;
@@ -49,27 +46,27 @@ public class AccountController {
     private final UserService userService;
     private final static Logger LOGGER = Logger.getLogger(AccountController.class);
 
+    private User defaultUser;
+
 
 
     @GetMapping("/accounts")
-    public List<Account> getAccounts(Principal principal,
-                                     @RequestParam(value = "pageNum", required = false, defaultValue = "1") int pageNum,
-                                     @RequestParam(value = "sortType", required = false, defaultValue = "id") String sortType){
+    public List<Account> getAccounts(
+            @RequestParam(value = "pageNum", required = false, defaultValue = "1") int pageNum,
+            @RequestParam(value = "sortType", required = false, defaultValue = "id") String sortType){
         LOGGER.info("get accounts ->");
-//        Optional<User> user = userService.findByEmail("user1@gmail.com");
-//        defaultUser = user.orElse(null);
+        Optional<User> user = userService.findByEmail("user1@gmail.com");
+        defaultUser = user.orElse(null);
 
-        //Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         LOGGER.info("Principal: " + principal);
-        Integer id;
+        String email = "";
         try {
-            //id = ((UserDetails)principal).ge();
-        }catch (Exception e){
-            LOGGER.error(e);
-        }
+            email = ((UserDetails)principal).getUsername();
+        }catch (Exception ignored){}
 
-        //User currentUser = userService.findByEmail(email).orElse(defaultUser);
-        return accountService.getPage(principal.getName(), pageNum, sortType).getContent();
+        User currentUser = userService.findByEmail(email).orElse(defaultUser);
+        return accountService.getPage(currentUser.getId(), pageNum, sortType).getContent();
     }
     @GetMapping("/account/{id}")
     public ResponseEntity<Account> getAccount(@PathVariable Integer id){
@@ -79,7 +76,7 @@ public class AccountController {
     }
     @GetMapping("/accounts/{id}")
     public List<Account> getAccountByUserId(
-            @PathVariable String id,
+            @PathVariable Integer id,
             @RequestParam(value = "pageNum", required = false, defaultValue = "1") int pageNum,
             @RequestParam(value = "sortType", required = false, defaultValue = "id") String sortType
                                                       ){
@@ -87,18 +84,17 @@ public class AccountController {
     }
 
     @PostMapping("/account")
-    ResponseEntity<Account> createAccount(@RequestBody Account account,
-                                          @AuthenticationPrincipal OAuth2User principal
+    ResponseEntity<Account> createAccount(@RequestBody Account account
                                       ) throws URISyntaxException {
         LOGGER.info("Request to create account: {}");
 //        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String email = ((UserDetails)principal).getUsername();
-        //String email = "user1@gmail.com";
+//        String email = ((UserDetails)principal).getUsername();
+        String email = "user1@gmail.com";
         Optional<User> user = userService.findByEmail(email);
 
         // check to see if user already exists
         //Optional<User> user = userRepository.findById(userId);
-        account.setUser(user.orElseThrow(()->new RuntimeException("")));
+        account.setUser(user.orElse(defaultUser));
         Account result = accountService.addAccount(account);
         return ResponseEntity.created(new URI("/account/" + result.getId()))
                 .body(result);

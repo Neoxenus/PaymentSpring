@@ -9,5 +9,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PaymentRepository extends JpaRepository<Payment, Integer> {
     Page<Payment> findAllBySenderAccountUserIdOrReceiverAccountUserIdAndStatusEquals(
-            String userId, String id, PaymentStatus sent, Pageable pageable);
+            Integer userId, Integer id, PaymentStatus sent, Pageable pageable);
 }
