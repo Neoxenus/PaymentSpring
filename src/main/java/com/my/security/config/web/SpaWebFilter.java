@@ -1,4 +1,4 @@
-package com.my.web;
+package com.my.security.config.web;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -17,12 +17,12 @@ public class SpaWebFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        String path = request.getRequestURI();
-        Authentication user = SecurityContextHolder.getContext().getAuthentication();
-        if (user != null && !path.startsWith("/") && !path.contains(".") && path.matches("/(.*)")) {
-            request.getRequestDispatcher("/").forward(request, response);
-            return;
-        }
+//        String path = request.getRequestURI();
+//        Authentication user = SecurityContextHolder.getContext().getAuthentication();
+//        if (user != null && !path.startsWith("/") && !path.contains(".") && path.matches("/(.*)")) {
+//            request.getRequestDispatcher("/").forward(request, response);
+//            return;
+//        }
 
         filterChain.doFilter(request, response);
     }

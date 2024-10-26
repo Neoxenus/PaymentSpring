@@ -40,7 +40,10 @@ getAccounts+
 
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000")
+
 //@CrossOrigin("*")
+@RequestMapping("/api")
 public class AccountController {
     private final AccountService accountService;
     private final UserService userService;

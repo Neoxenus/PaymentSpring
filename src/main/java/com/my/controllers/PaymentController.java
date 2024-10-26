@@ -21,6 +21,7 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api")
 public class PaymentController {
     private final PaymentService paymentService;
     private final UserService userService;
