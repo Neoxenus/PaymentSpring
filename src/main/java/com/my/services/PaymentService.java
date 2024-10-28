@@ -3,6 +3,7 @@ package com.my.services;
 import com.my.dto.PaymentDTO;
 import com.my.entities.Account;
 import com.my.entities.Payment;
+import com.my.entities.enums.Block;
 import com.my.entities.enums.PaymentStatus;
 import com.my.repositories.AccountRepository;
 import com.my.repositories.PaymentRepository;
@@ -42,6 +43,10 @@ public class PaymentService {
                 .orElseThrow(() -> new IllegalStateException("Incorrect sender"));
         if(receiver.equals(sender))
             throw new IllegalStateException("Sender and receiver are identical");
+        if(sender.getIsBlocked() != Block.ACTIVE)
+            throw new IllegalStateException("Sender is blocked");
+        if(receiver.getIsBlocked() != Block.ACTIVE)
+            throw new IllegalStateException("Receiver is blocked");
 
         Payment newPayment = new Payment(
                 Double.parseDouble(payment.getAmount()),

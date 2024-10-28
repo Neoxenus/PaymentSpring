@@ -26,7 +26,7 @@ CREATE TABLE account
     id                   SERIAL PRIMARY KEY,
     number               VARCHAR UNIQUE,
     account_name         VARCHAR,
-    IBAN                 VARCHAR(10),
+    IBAN                 VARCHAR(20),
     date_of_registration TIMESTAMP,
     balance_amount       DOUBLE PRECISION,
     is_blocked           VARCHAR,

@@ -6,7 +6,13 @@ import com.my.web.SpaWebFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
@@ -21,17 +27,25 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
+@Lazy
 @AllArgsConstructor
+@EnableWebSecurity
 public class SecurityConfiguration {
 
-    private final LogoutHandler logoutHandler;
+    //private final LogoutHandler logoutHandler;
+    //public final AuthenticationManager authManager;
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         CsrfTokenRequestAttributeHandler requestHandler = new CsrfTokenRequestAttributeHandler();
         // set the name of the attribute the CsrfToken will be populated on
         requestHandler.setCsrfRequestAttributeName(null);
-        return http
+        return http.csrf().disable()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                .and()
+                .logout().disable()
                 //.cors().and()
 
                 .authorizeHttpRequests((authz) -> authz
@@ -46,31 +60,31 @@ public class SecurityConfiguration {
 //                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
 //                .addLogoutHandler(logoutHandler)
                 //.and()
-                .csrf((csrf) -> csrf
-                        .csrfTokenRepository(CookieCsrfTokenRepository
-                                .withHttpOnlyFalse())
-//                        // https://stackoverflow.com/a/74521360/65681
-                        .csrfTokenRequestHandler(requestHandler)
-               )
+//                .csrf((csrf) -> csrf
+//                        .csrfTokenRepository(CookieCsrfTokenRepository
+//                                .withHttpOnlyFalse())
+////                        // https://stackoverflow.com/a/74521360/65681
+//                        .csrfTokenRequestHandler(requestHandler)
+//               )
 
-               .addFilterAfter(new CookieCsrfFilter(), BasicAuthenticationFilter.class)
-               .addFilterAfter(new SpaWebFilter(), BasicAuthenticationFilter.class)
+//               .addFilterAfter(new CookieCsrfFilter(), BasicAuthenticationFilter.class)
+//               .addFilterAfter(new SpaWebFilter(), BasicAuthenticationFilter.class)
                 .build();
     }
 
-    @Bean
-    public RequestCache refererRequestCache() {
-        return new HttpSessionRequestCache() {
-            @Override
-            public void saveRequest(HttpServletRequest request, HttpServletResponse response) {
-                String referrer = request.getHeader("referer");
-                if (referrer == null) {
-                    referrer = request.getRequestURL().toString();
-                }
-                request.getSession().setAttribute("SPRING_SECURITY_SAVED_REQUEST",
-                        new SimpleSavedRequest(referrer));
-
-            }
-        };
-    }
+//    @Bean
+//    public RequestCache refererRequestCache() {
+//        return new HttpSessionRequestCache() {
+//            @Override
+//            public void saveRequest(HttpServletRequest request, HttpServletResponse response) {
+//                String referrer = request.getHeader("referer");
+//                if (referrer == null) {
+//                    referrer = request.getRequestURL().toString();
+//                }
+//                request.getSession().setAttribute("SPRING_SECURITY_SAVED_REQUEST",
+//                        new SimpleSavedRequest(referrer));
+//
+//            }
+//        };
+//    }
 }
