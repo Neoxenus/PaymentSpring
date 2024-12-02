@@ -3,49 +3,41 @@ import '../../App.css';
 import { Button, ButtonGroup, Container, Table } from 'reactstrap';
 import AppNavbar from '../AppNavbar';
 import { Link } from 'react-router-dom';
-import {useCookies} from "react-cookie";
+import { useCookies } from "react-cookie";
 
 const AccountList = () => {
-
     const [accounts, setAccounts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [cookies] = useCookies(['XSRF-TOKEN']);
-
+    const [emptyList, setEmptyList] = useState(true);
 
     useEffect(() => {
         setLoading(true);
-
         fetch('/accounts')
             .then(response => response.json())
             .then(data => {
                 setAccounts(data);
                 setLoading(false);
-                //console.log(data);
-            })
+                setEmptyList(data.length === 0);
+            });
     }, []);
 
-    // const remove = async (id) => {
-    //     await fetch(`/account/${id}`, {
-    //         method: 'DELETE',
-    //         headers: {
-    //             'Accept': 'application/json',
-    //             'Content-Type': 'application/json'
-    //         }
-    //     }).then(() => {
-    //         let updatedAccounts = [...accounts].filter(i => i.id !== id);
-    //         setAccounts(updatedAccounts);
-    //     });
-    // }
-
-    function getNewBlockedStatus(blockedStatus) {
-        let blocked ='';
-        if(blockedStatus === 'ACTIVE'){
-            blocked = 'BLOCKED';
-        } else if (blockedStatus === 'BLOCKED'){
-            blocked = 'APPROVAL';
-        }
-        return blocked;
-    }
+    const remove = async (id) => {
+        await fetch(`/account/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'X-XSRF-TOKEN': cookies['XSRF-TOKEN'],
+            }
+        }).then(() => {
+            let updatedAccounts = accounts.filter(account => account.id !== id);
+            setAccounts(updatedAccounts);
+            setEmptyList(updatedAccounts.length === 0);
+        }).catch(err => {
+            console.error("Error deleting account:", err);
+        });
+    };
 
     const block = async (id) => {
         await fetch(`/account/block/${id}`, {
@@ -55,75 +47,66 @@ const AccountList = () => {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             }
-            //credentials: "include"
         }).then(() => {
             let blockedStatus = [...accounts].find(i => i.id === id)?.isBlocked;
-            blockedStatus = getNewBlockedStatus(blockedStatus);
-
+            // blockedStatus = getNewBlockedStatus(blockedStatus);
             const entityIndex = accounts.findIndex((entity) => entity.id === id);
             const updatedAccounts = [...accounts];
-            let accountToUpdate = [...accounts].find(i => i.id === id);
+            let accountToUpdate = updatedAccounts[entityIndex];
+            // console.log(accountToUpdate);
             accountToUpdate.isBlocked = blockedStatus;
             updatedAccounts.splice(entityIndex, 1, accountToUpdate);
             setAccounts(updatedAccounts);
-
         });
-    }
+    };
 
     if (loading) {
         return <p>Loading...</p>;
     }
 
     function getDateFromLocalDateJSON(dateArray) {
-        let date = new Date()
-        date.setFullYear(dateArray[0], dateArray[1]-1, dateArray[2])
-        date.setHours(dateArray[3], dateArray[4], dateArray[5])
+        let date = new Date();
+        date.setFullYear(dateArray[0], dateArray[1] - 1, dateArray[2]);
+        date.setHours(dateArray[3], dateArray[4], dateArray[5]);
         return date;
     }
 
-
-    const accountList = accounts.map(account => {
+    const accountList = accounts?.map(account => {
         const date = getDateFromLocalDateJSON(account.dateOfRegistration);
-
         let blockedStatus;
-        if(account.isBlocked === 'BLOCKED'){
+        if (account.isBlocked === 'BLOCKED') {
             blockedStatus = "BLOCKED";
-        } else if(account.isBlocked === 'APPROVAL'){
+        } else if (account.isBlocked === 'APPROVAL') {
             blockedStatus = "APPROVAL";
-        } else{
+        } else {
             blockedStatus = "ACTIVE";
         }
 
-        return <tr key={account.id}>
-
-            <td>{account.number}</td>
-            <td>{account.accountName}</td>
-            <td>{account.iban}</td>
-            <td>{date.toLocaleString()}</td>
-
-            <td>{account.balanceAmount}</td>
-            <td>{blockedStatus}
-            </td>
-            <td>
-                <ButtonGroup>
-                    <Button size="sm" color="primary" tag={Link}
-                            to={"/account/replenish/" + account.id}>Replenish</Button>
-
-                    {blockedStatus === 'ACTIVE'?
-                        <Button size="sm" color="danger" onClick={() => block(account.id)}>Block</Button> :
-                        <Button size="sm" color="primary" onClick={() => block(account.id)}>Unblock</Button>
-                    }
-                    {/*<Button size="sm" color="secondary" tag={Link} to={"/account/" + account.id}>Edit</Button>*/}
-                    {/*<Button size="sm" color="danger" onClick={() => remove(account.id)}>Delete</Button>*/}
-                </ButtonGroup>
-            </td>
-        </tr>
-
+        return (
+            <tr key={account.id}>
+                <td>{account.number}</td>
+                <td>{account.accountName}</td>
+                <td>{account.iban}</td>
+                <td>{date.toLocaleString()}</td>
+                <td>{account.balanceAmount}</td>
+                <td>{blockedStatus}</td>
+                <td>
+                    <ButtonGroup>
+                        <Button size="sm" color="primary" tag={Link} to={"/account/replenish/" + account.id}>Replenish</Button>
+                        {blockedStatus === 'ACTIVE' ?
+                            <Button size="sm" color="danger" onClick={() => block(account.id)}>Block</Button> :
+                            <Button size="sm" color="primary" onClick={() => block(account.id)}>Unblock</Button>
+                        }
+                        <Button size="sm" color="danger" onClick={() => remove(account.id)}>Delete</Button> {/* Add delete button */}
+                    </ButtonGroup>
+                </td>
+            </tr>
+        );
     });
 
     return (
         <div>
-            <AppNavbar/>
+            <AppNavbar />
             <Container fluid>
                 <div className="float-end">
                     <Button color="success" tag={Link} to="/account/new">Add Account</Button>

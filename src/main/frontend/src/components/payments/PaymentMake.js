@@ -1,19 +1,20 @@
-import React, {useEffect, useState} from 'react';
-import {Link, useNavigate, useParams} from 'react-router-dom';
-import {Button, Container, Form, FormGroup, Input, Label} from 'reactstrap';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Button, Container, Form, FormGroup, Input, Label, Alert } from 'reactstrap';
 import AppNavbar from '../AppNavbar';
 
-const AccountNew = () => {
+const PaymentNew = () => {
     const initialFormState = {
         amount: '',
-        assignment: '',
+        assignment: '', // Added assignment field
         sender: '',
         receiver: ''
     };
     const [accounts, setAccounts] = useState([]);
     const [payment, setPayment] = useState(initialFormState);
-    const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null); // State for error messages
+    const navigate = useNavigate();
     const { id } = useParams();
 
     useEffect(() => {
@@ -22,73 +23,72 @@ const AccountNew = () => {
         fetch('/accounts')
             .then(response => response.json())
             .then(data => {
-                //console.log(data);
-                //setAccounts(data);
-               // console.log(accounts);
-                let availableAccounts = [...data].filter(account => account.isBlocked === 'ACTIVE');
+                let availableAccounts = data.filter(account => account.isBlocked === 'ACTIVE');
                 setAccounts(availableAccounts);
                 setLoading(false);
-                //console.log(availableAccounts);
-            })
+            });
     }, []);
 
     const handleChange = (event) => {
-        const { name, value } = event.target
-        // console.log(name);
-        // console.log(value);
-        setPayment({ ...payment, [name]: value })
-    }
-    // const handleSenderChange = (event) => {
-    //     const { name, value, key } = event.target
-    //     console.log(event.target);
-    //     console.log(event);
-    //     setPayment({ ...payment, [name]: accounts.find(e => e.id === value) })
-    // }
+        const { name, value } = event.target;
+        setPayment({ ...payment, [name]: value });
+    };
+
+    const validateForm = () => {
+        // Reset error state
+        setError(null);
+        // Check if required fields are filled
+        if (!payment.amount || !payment.assignment || !payment.sender || !payment.receiver) {
+            setError('All fields are required.');
+            return false;
+        }
+        // Check if amount is a valid number
+        if (!/^\d+(\.\d{1,2})?$/.test(payment.amount)) {
+            setError('Amount must be a valid number with up to two decimal places.');
+            return false;
+        }
+        return true;
+    };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        //payment.amount = parseFloat(payment.amount);
-        //setPayment({ ...payment, amount: parseFloat(payment.amount) })
-        console.log(payment);
-        await fetch(`/payment`, {
+
+        // Validate the form before submission
+        if (!validateForm()) return;
+
+        // Submit the payment
+        fetch(`/payment`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(payment)
-        });
+        })            .then(response => response.ok ? response.json() : response.text())
+            .then(data => {
+                if (typeof data === "object" && data !== null) {
+                    navigate('/payments');
+                } else {
+                    setError(data);
+                }
+            })
+            .catch(error => setError("An error occurred during registration."));
         setPayment(initialFormState);
-        navigate('/payments');
-    }
+
+    };
 
     if (loading) {
         return <p>Loading...</p>;
     }
 
     const title = <h2>Make Payment</h2>;
-    // <form method="post" action="<c:url value="/"/>"  class="form-group">
-    //
-    // <input name="command" type="hidden" value="addAccount">
-    //
-    //     <label for="number" class="form-label"><fmt:message key='account.table.accountNumber'/></label>
-    //     <input type="text" name="number" class="form-control" required
-    //            id="number">
-    //         <br/>
-    //         <label for="account_name" class="form-label"><fmt:message key='account.table.accountName'/></label>
-    //         <input type="text" name="account_name" class="form-control" required
-    //                id="account_name">
-    //             <br/>
-    //             <label for="IBAN" class="form-label"><fmt:message key='account.table.iban'/></label>
-    //             <input type="text" name="IBAN" class="form-control" required
-    //                    id="IBAN">
-    //                 <br/>
-    //                 <input type="submit" class="btn btn-info" value="<fmt:message key='accounts.addAccount'/>">
-    //                 </form>
-    return (<div>
-            <AppNavbar/>
+
+    return (
+        <div>
+            <AppNavbar />
             <Container>
                 {title}
+                {error && <Alert color="danger">{error}</Alert>} {/* Display error message */}
                 <Form onSubmit={handleSubmit}>
                     <FormGroup>
                         <Label for="amount">Amount</Label>
@@ -96,22 +96,36 @@ const AccountNew = () => {
                                placeholder="Amount"
                                id="amount"
                                onChange={handleChange}
+                               required
+                        />
+                    </FormGroup>
+
+                    <FormGroup>
+                        <Label for="assignment">Assignment</Label>
+                        <Input type="text" name="assignment"
+                               placeholder="Assignment"
+                               id="assignment"
+                               onChange={handleChange}
+                               required
                         />
                     </FormGroup>
 
                     <Label for="sender">Sender Account</Label>
-                    <Input id="sender" list="senderAccounts" name="sender" onChange={handleChange} autoComplete="off"/>
+                    <Input id="sender" list="senderAccounts" name="sender" onChange={handleChange} autoComplete="off" required />
                     <datalist id="senderAccounts">
                         {accounts.map(account =>
-                            <option key={account.id} value={account.number}/>
+                            <option key={account.id} value={account.number} />
                         )}
                     </datalist>
 
                     <FormGroup>
                         <Label for="receiver">Receiver Account Number</Label>
                         <Input type="text" name="receiver" id="receiver"
-                               onChange={handleChange}/>
+                               onChange={handleChange}
+                               required
+                        />
                     </FormGroup>
+
                     <FormGroup>
                         <Button color="primary" type="submit">Save</Button>
                         <Button color="secondary" tag={Link} to="/payments">Cancel</Button>
@@ -119,7 +133,7 @@ const AccountNew = () => {
                 </Form>
             </Container>
         </div>
-    )
+    );
 };
 
-export default AccountNew;
+export default PaymentNew;

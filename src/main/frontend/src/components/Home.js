@@ -13,18 +13,41 @@ const Home = () => {
 
     useEffect(() => {
         setLoading(true);
-        fetch('/user', { credentials: 'include' }) // <.>
-            .then(response => response.text())
-            .then(body => {
-                console.log(body);
-                if (body === '') {
-                    setAuthenticated(false);
-                } else {
-                    setUser(JSON.parse(body));
-                    setAuthenticated(true);
-                }
-                setLoading(false);
-            });
+        const body = {
+            "id": 52,
+            "name": "admin",
+            "email": "admin",
+            "phoneNumber": "0000",
+            "role": "ADMIN",
+            "password": "$2a$10$pvucIvhf9ZtV7Ovmon70T.f0AD/s7pfy0i/Fb6i6P16Et3BVvBPr.",
+            "isBlocked": "ACTIVE"
+        };
+        setUser(body);
+        setAuthenticated(true);
+        // window.sessionStorage.setItem("user", JSON.stringify(body));
+        setLoading(false);
+        // fetch('/user', { credentials: 'include' }) // <.>
+        //     .then(response => response.text())
+        //     .then(body => {
+        //         const loggedInUser = JSON.parse(window.sessionStorage.getItem("user"));
+        //         console.log("body: ");
+        //         console.log(body);
+        //
+        //         // if (body === '') {
+        //         //     setAuthenticated(false);
+        //         // } else {
+        //         //     setUser(JSON.parse(body));
+        //         //     setAuthenticated(true);
+        //         // }
+        //         if(loggedInUser!=null && loggedInUser!==""){
+        //             setUser(loggedInUser);
+        //             setAuthenticated(true);
+        //             setLoading(false);
+        //             return;
+        //         }
+        //         //console.log(user);
+        //         setLoading(false);
+        //     });
     }, [setAuthenticated, setLoading, setUser])
 
     const login = () => {
@@ -39,18 +62,20 @@ const Home = () => {
         fetch('/logout', {
             method: 'POST',
             headers: {
-                'X-XSRF-TOKEN': cookies['XSRF-TOKEN'],
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
             credentials: 'include'
         })
-            .then(res => res.json())
             .then(response => {
-                console.log("response");
+                console.log("response: ");
                 console.log(response);
-                window.location.href = `${response?.logoutUrl}?id_token_hint=${response?.idToken}`
-                    + `&post_logout_redirect_uri=${window.location.origin}`;
+
+                window.sessionStorage.setItem("user", JSON.stringify(""));
+                setUser(null);
+                console.log(user);
+                //navigate("/");
+                setAuthenticated(false);
             });
     }
 
@@ -61,9 +86,10 @@ const Home = () => {
     const button = authenticated ?
         <div>
             <br/>
-            <Button color="link" onClick={logout}>Logout</Button>
+            <Button color="primary" onClick={logout}>Logout</Button>
         </div> :
-        <Button color="primary" onClick={login}>Login</Button>;
+        // <Button color="primary" onClick={login}>Login</Button>;
+        <Button color="primary" tag={Link} to="/login">Login</Button>
 
     if (loading) {
         return <p>Loading...</p>;

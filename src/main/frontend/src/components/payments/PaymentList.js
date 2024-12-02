@@ -56,8 +56,7 @@ const PaymentList = () => {
                 'Content-Type': 'application/json'
             }
         }).then(() => {
-            //let blockedStatus = [...payments].find(i => i.id === id)?.isBlocked;
-            //blockedStatus = getNewBlockedStatus(blockedStatus);
+
 
             const entityIndex = payments.findIndex((entity) => entity.id === id);
             const updatedAccounts = [...payments];
@@ -96,6 +95,8 @@ const PaymentList = () => {
 
             <td>{payment.number}</td>
             <td>{payment.amount}</td>
+            <td>{payment.senderAccount?.number}</td>
+            <td>{payment.receiverAccount?.number}</td>
             <td>{payment.assignment}</td>
             <td>{time.toLocaleString()}</td>
 
@@ -133,6 +134,8 @@ const PaymentList = () => {
                     <tr>
                         <th>Number</th>
                         <th>Amount</th>
+                        <th>Sender Account</th>
+                        <th>Receiver Account</th>
                         <th>Assignment</th>
                         <th>Time</th>
                         <th>Status</th>
